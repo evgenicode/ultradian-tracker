@@ -20,6 +20,7 @@ function App(): JSX.Element {
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
             Documentation
           </a>
+          <p className="text-blue-500">test</p>
         </div>
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
