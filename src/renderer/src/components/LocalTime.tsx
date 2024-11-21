@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react"
 import React  from 'react'
+import { useState, useEffect } from "react"
+
 
 export const LocalTime = (): JSX.Element => {
   const [time, setTime] = useState(new Date().toLocaleTimeString());
