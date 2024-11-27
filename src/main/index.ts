@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import db from "./db";
+
+
 
 
 function createWindow(): void {
@@ -73,3 +76,70 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+interface UserMark {
+  id?: number;
+  mark: number;
+  timestamp: string;
+  date: string;
+}
+
+
+ipcMain.handle("get-user-marks", async (): Promise<UserMark[]> => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM user_marks", [], (err, rows) => {
+      if (err) {
+        console.error("Database Error:", err);
+        reject(err);
+      } else {
+        resolve(rows as UserMark[]);
+      }
+    });
+  });
+});
+
+ipcMain.handle("add-user-mark", async (event, userMark: Omit<UserMark, "id">): Promise<{id: number}> => {
+  return new Promise((resolve, reject) => {
+    const { mark, timestamp, date } = userMark;
+    db.run(
+      "INSERT INTO user_marks (mark, timestamp, date) VALUES (?, ?, ?)",
+      [mark, timestamp, date],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({ id: this.lastID }); 
+        }
+      }
+    )
+  })
+})
+
+ipcMain.handle("delete-user-mark", async (event, id: number): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    db.run("DELETE FROM user_marks WHERE id = ?", [id], (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+});
+
+ipcMain.handle("update-user-mark", async (event, userMark: UserMark): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const { id, mark, timestamp, date } = userMark;
+    db.run(
+      "UPDATE user_marks SET mark = ?, timestamp = ?, date = ? WHERE id = ?",
+      [mark, timestamp, date, id],
+      (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      }
+    );
+  });
+});
