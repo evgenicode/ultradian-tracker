@@ -1,5 +1,5 @@
 import React from "react";
-import { addUserMark } from "../ipcService";
+// import { addUserMark } from "../ipcService";
 
 const GaugeScale = ({scale}: { scale: number }) => {
   const buttons = Array.from({ length: scale }, (_, i ) => (
@@ -17,7 +17,7 @@ const handleClick = async (i: number) => {
     timestamp: new Date().toISOString(), 
     date: new Date().toLocaleDateString() 
   };
-  const result = await addUserMark(newMark.mark, newMark.timestamp, newMark.date);
+  const result = await (window as any).api.addUserMark(newMark.mark, newMark.timestamp, newMark.date);
   console.log(`clicked!${grade}`)
   if (result) {
     console.log("sent to db", result);
