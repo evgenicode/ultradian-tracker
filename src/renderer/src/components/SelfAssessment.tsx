@@ -17,7 +17,9 @@ const handleClick = async (i: number) => {
     timestamp: new Date().toISOString(), 
     date: new Date().toLocaleDateString() 
   };
-  const result = await (window as any).api.addUserMark(newMark.mark, newMark.timestamp, newMark.date);
+  const result = await (window as any).api.addUserMark(newMark.mark, newMark.timestamp, newMark.date).catch((error: Error) => {
+    console.error("failed to add mark", error);
+  });
   console.log(`clicked!${grade}`)
   if (result) {
     console.log("sent to db", result);

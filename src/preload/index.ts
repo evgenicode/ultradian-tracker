@@ -1,17 +1,46 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { addUserMark, updateUserMark } from "./ipcService"
 
 // Custom APIs for renderer
 const api = {
-  addUserMark: (mark: number, timestamp: string, date: string) =>
-    ipcRenderer.invoke("add-user-mark", { mark, timestamp, date }),
 
-  getUserMarks: () => ipcRenderer.invoke("get-user-marks"),
+  addUserMark: async (mark: number, timestamp: string, date: string) => {
+    try {
+        return await ipcRenderer.invoke("add-user-mark", { mark, timestamp, date });
+    } catch (error) {
+        console.error("Error adding user mark:", error);
+        throw error; // Ensure errors propagate
+    }
+},
 
-  deleteUserMark: (id: number) => ipcRenderer.invoke("delete-user-mark", id),
+  getUserMarks: async () => {
+    try {
+        return await ipcRenderer.invoke("get-user-marks");
+    } catch (error) {
+      console.error("Error fetchin user marks:", error)
+      throw error;
+    }
+  },
 
-  updateUserMark: (userMark: { id: number; mark: number; timestamp: string; date: string }) =>
-    ipcRenderer.invoke("update-user-mark", userMark),
+
+  deleteUserMark: async (id: number) => {
+    try {
+      return await ipcRenderer.invoke("delete-user-mark", id);
+    } catch (error) {
+      console.error("Error deleting user mark:", error)
+      throw error;
+    }
+  },
+
+  updateUserMark: async (id:number, mark: number, timestamp: string, date: string) => {
+    try {
+      await ipcRenderer.invoke("update-user-mark", { id, mark, timestamp, date });
+    } catch (error) {
+      console.error("Error updating user mark:", error);
+    }
+  },
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
