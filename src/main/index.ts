@@ -86,6 +86,7 @@ interface UserMark {
 
 
 ipcMain.handle("get-user-marks", async (): Promise<UserMark[]> => {
+  console.log("hello from main get")
   return new Promise((resolve, reject) => {
     db.all("SELECT * FROM user_marks", [], (err, rows) => {
       if (err) {
@@ -99,6 +100,7 @@ ipcMain.handle("get-user-marks", async (): Promise<UserMark[]> => {
 });
 
 ipcMain.handle("add-user-mark", async (event, userMark: Omit<UserMark, "id">): Promise<{id: number}> => {
+  console.log("hello from main add")
   return new Promise((resolve, reject) => {
     const { mark, timestamp, date } = userMark;
     db.run(

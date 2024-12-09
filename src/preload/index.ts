@@ -7,6 +7,7 @@ const api = {
 
   addUserMark: async (mark: number, timestamp: string, date: string) => {
     try {
+        console.log("hello from preload")
         return await ipcRenderer.invoke("add-user-mark", { mark, timestamp, date });
     } catch (error) {
         console.error("Error adding user mark:", error);

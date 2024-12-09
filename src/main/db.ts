@@ -2,12 +2,11 @@ import sqlite3 from "sqlite3";
 import path from "path";
 
 const dbPath: string = path.join(__dirname, "database.sqlite");
-
 const db = new sqlite3.Database(dbPath, (err: Error | null) => {
   if (err) {
     console.error("Error opening database:", err.message);
   } else {
-    console.log("Connected to SQLite database");
+    console.log("Connected to SQLite database at", dbPath );
   }
 });
 
